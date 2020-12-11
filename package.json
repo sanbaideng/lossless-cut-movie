@@ -1,0 +1,397 @@
+{
+  "name": "lossless-cut",
+  "productName": "LosslessCut",
+  "description": "The swiss army knife of lossless video/audio editing",
+  "copyright": "Copyright © 2020 ${author}",
+  "version": "3.25.0",
+  "main": "public/electron.js",
+  "homepage": "./",
+  "scripts": {
+    "start": "concurrently -k \"cross-env BROWSER=none PORT=3001 react-scripts start\" \"wait-on http://localhost:3001 && electron .\"",
+    "icon-gen": "mkdirp icon-build && svg2png src/icon.svg -o ./icon-build/app-512.png -w 512 -h 512 && mkdirp icns-build && icon-gen -i src/icon.svg -o ./icns-build --icns --icns-sizes 512,1024 && mkdirp build-resources/appx && npx svg2png src/icon.svg --output=build-resources/appx/StoreLogo.png --width=50 --height=50 && npx svg2png src/icon.svg --output=build-resources/appx/Square150x150Logo.png --width=300 --height=300 && npx svg2png src/icon.svg --output=build-resources/appx/Square44x44Logo.png --width=44 --height=44 && npx svg2png src/icon.svg --output=build-resources/appx/Wide310x150Logo.png --width=620 --height=300",
+    "download-ffmpeg": "mkdir -p ffmpeg-mac && wget https://github.com/mifi/ffmpeg-build-script/releases/download/n4.2.2/ffmpeg -O ffmpeg-mac/ffmpeg && wget https://github.com/mifi/ffmpeg-build-script/releases/download/n4.2.2/ffprobe -O ffmpeg-mac/ffprobe && chmod +x ffmpeg-mac/ffmpeg && chmod +x ffmpeg-mac/ffprobe",
+    "build": "yarn icon-gen && react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "lint": "eslint --ext .jsx --ext .js .",
+    "pack-mac": "electron-builder --mac",
+    "prepack-mac": "yarn build",
+    "pack-win": "electron-builder --win",
+    "prepack-win": "yarn build",
+    "postinstall": "patch-package && electron-builder install-app-deps",
+    "pack-linux": "electron-builder --linux",
+    "prepack-linux": "yarn build",
+    "scan-i18n": "i18next-scanner --config i18next-scanner.config.js"
+  },
+  "author": {
+    "name": "Mikael Finstad",
+    "email": "finstaden@gmail.com",
+    "url": "https://mifi.no/losslesscut/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mifi/lossless-cut.git"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "axios": "^0.19.2",
+    "color": "^3.1.0",
+    "concurrently": "^5.1.0",
+    "csv-parse": "^4.8.5",
+    "csv-stringify": "^5.3.6",
+    "electron": "^8.5.2",
+    "electron-builder": "^22.9.1",
+    "electron-builder-notarize": "^1.1.2",
+    "electron-devtools-installer": "^2.2.4",
+    "eslint": "^5.16.0 || ^6.1.0",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.14.3",
+    "eslint-plugin-react-hooks": "^1.7.0",
+    "evergreen-ui": "^4.23.0",
+    "fast-xml-parser": "^3.17.4",
+    "file-url": "^3.0.0",
+    "framer-motion": "^1.8.4",
+    "hammerjs": "^2.0.8",
+    "i18next": "^19.3.2",
+    "i18next-scanner": "^2.11.0",
+    "icon-gen": "^2.0.0",
+    "lodash": "^4.17.19",
+    "mkdirp": "^1.0.3",
+    "moment": "^2.18.1",
+    "mousetrap": "^1.6.1",
+    "p-map": "^3.0.0",
+    "patch-package": "^6.2.1",
+    "pify": "^5.0.0",
+    "pretty-ms": "^6.0.0",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "react-hammerjs": "^1.0.1",
+    "react-i18next": "^11.3.3",
+    "react-icons": "^3.11.0",
+    "react-lottie": "^1.2.3",
+    "react-scripts": "^3.4.0",
+    "react-sortable-hoc": "^1.5.3",
+    "react-use": "^13.26.1",
+    "strong-data-uri": "^1.0.5",
+    "svg2png": "^4.1.1",
+    "sweetalert2": "^9.10.10",
+    "sweetalert2-react-content": "^1.0.1",
+    "use-debounce": "^5.1.0",
+    "use-trace-update": "^1.3.0",
+    "uuid": "^3.3.2",
+    "wait-on": "^4.0.1"
+  },
+  "dependencies": {
+    "cross-env": "^7.0.2",
+    "cue-parser": "^0.3.0",
+    "electron-is-dev": "^0.1.2",
+    "electron-store": "^5.1.1",
+    "electron-unhandled": "^3.0.2",
+    "execa": "^4.0.0",
+    "ffmpeg-static": "^4.2.1",
+    "ffprobe-static": "^3.0.0",
+    "file-type": "^12.4.0",
+    "fs-extra": "^8.1.0",
+    "github-api": "^3.2.2",
+    "i18next-electron-language-detector": "^0.0.10",
+    "i18next-fs-backend": "^1.0.1",
+    "json5": "^2.1.3",
+    "mime-types": "^2.1.14",
+    "open": "^7.0.3",
+    "react-syntax-highlighter": "^13.0.0",
+    "read-chunk": "^2.0.0",
+    "semver": "^7.3.2",
+    "string-to-stream": "^1.1.1",
+    "strtok3": "^6.0.0",
+    "trash": "^6.1.1"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      "electron 8.0"
+    ],
+    "development": [
+      "electron 8.0"
+    ]
+  },
+  "build": {
+    "directories": {
+      "buildResources": "build-resources"
+    },
+    "files": [
+      "build/**/*",
+      "!node_modules/ffmpeg-static/ffmpeg",
+      "!node_modules/ffprobe-static/bin/**/*"
+    ],
+    "asar": {
+      "smartUnpack": false
+    },
+    "appId": "no.mifi.losslesscut",
+    "artifactName": "${productName}-${os}.${ext}",
+    "afterSign": "electron-builder-notarize",
+    "mac": {
+      "hardenedRuntime": true,
+      "appId": "no.mifi.losslesscut-mac",
+      "category": "public.app-category.productivity",
+      "target": [
+        "mas",
+        "dmg"
+      ],
+      "asarUnpack": [
+        "node_modules/trash/**"
+      ],
+      "electronLanguages": [
+        "en"
+      ],
+      "extraResources": [
+        {
+          "from": "ffmpeg-mac/ffmpeg",
+          "to": "ffmpeg"
+        },
+        {
+          "from": "ffmpeg-mac/ffprobe",
+          "to": "ffprobe"
+        }
+      ],
+      "icon": "icns-build/app.icns",
+      "fileAssociations": [
+        {
+          "ext": [
+            "webm",
+            "mkv",
+            "flv",
+            "vob",
+            "ogv",
+            "drc",
+            "gif",
+            "gifv",
+            "mng",
+            "avi",
+            "mts",
+            "m2ts",
+            "ts",
+            "mov",
+            "qt",
+            "wmv",
+            "yuv",
+            "rm",
+            "rmvb",
+            "asf",
+            "amv",
+            "mp4",
+            "m4v",
+            "mpg",
+            "mp2",
+            "mpeg",
+            "mpe",
+            "mpv",
+            "m2v",
+            "svi",
+            "3gp",
+            "3g2",
+            "mxf",
+            "roq",
+            "nsv",
+            "f4v",
+            "f4p",
+            "f4a",
+            "f4b"
+          ],
+          "name": "Video",
+          "description": "Video files",
+          "role": "Viewer"
+        },
+        {
+          "ext": [
+            "aa",
+            "aac",
+            "aax",
+            "act",
+            "aiff",
+            "alac",
+            "amr",
+            "ape",
+            "au",
+            "awb",
+            "dct",
+            "dss",
+            "dvf",
+            "flac",
+            "gsm",
+            "iklax",
+            "ivs",
+            "m4a",
+            "m4b",
+            "m4p",
+            "mmf",
+            "mp3",
+            "mpc",
+            "msv",
+            "nmf",
+            "nsf",
+            "ogg",
+            "oga",
+            "mogg",
+            "opus",
+            "ra",
+            "rf64",
+            "sln",
+            "tta",
+            "voc",
+            "vox",
+            "wav",
+            "wma",
+            "wv",
+            "8svx",
+            "cda"
+          ],
+          "name": "Audio",
+          "description": "Audio files",
+          "role": "Viewer"
+        }
+      ]
+    },
+    "mas": {
+      "hardenedRuntime": false,
+      "entitlements": "entitlements.mas.plist",
+      "entitlementsInherit": "entitlements.mas.inherit.plist",
+      "provisioningProfile": "LosslessCut_Mac_App_Store_provisioning_profile.provisionprofile",
+      "binaries": [
+        "dist/mas/LosslessCut.app/Contents/Resources/ffmpeg",
+        "dist/mas/LosslessCut.app/Contents/Resources/ffprobe",
+        "dist/mas/LosslessCut.app/Contents/Resources/app.asar.unpacked/node_modules/trash/lib/macos-trash"
+      ]
+    },
+    "win": {
+      "target": [
+        "portable",
+        "zip",
+        "appx"
+      ],
+      "extraResources": [
+        "node_modules/ffmpeg-static/ffmpeg.exe",
+        "node_modules/ffprobe-static/bin/win32/x64/**"
+      ],
+      "icon": "icon-build/app-512.png",
+      "fileAssociations": [
+        {
+          "ext": [
+            "webm",
+            "mkv",
+            "flv",
+            "vob",
+            "ogv",
+            "drc",
+            "gif",
+            "gifv",
+            "mng",
+            "avi",
+            "mts",
+            "m2ts",
+            "ts",
+            "mov",
+            "qt",
+            "wmv",
+            "yuv",
+            "rm",
+            "rmvb",
+            "asf",
+            "amv",
+            "mp4",
+            "m4v",
+            "mpg",
+            "mp2",
+            "mpeg",
+            "mpe",
+            "mpv",
+            "m2v",
+            "svi",
+            "3gp",
+            "3g2",
+            "mxf",
+            "roq",
+            "nsv",
+            "f4v",
+            "f4p",
+            "f4a",
+            "f4b"
+          ],
+          "name": "Video",
+          "description": "Video files",
+          "role": "Viewer"
+        },
+        {
+          "ext": [
+            "aa",
+            "aac",
+            "aax",
+            "act",
+            "aiff",
+            "alac",
+            "amr",
+            "ape",
+            "au",
+            "awb",
+            "dct",
+            "dss",
+            "dvf",
+            "flac",
+            "gsm",
+            "iklax",
+            "ivs",
+            "m4a",
+            "m4b",
+            "m4p",
+            "mmf",
+            "mp3",
+            "mpc",
+            "msv",
+            "nmf",
+            "nsf",
+            "ogg",
+            "oga",
+            "mogg",
+            "opus",
+            "ra",
+            "rf64",
+            "sln",
+            "tta",
+            "voc",
+            "vox",
+            "wav",
+            "wma",
+            "wv",
+            "8svx",
+            "cda"
+          ],
+          "name": "Audio",
+          "description": "Audio files",
+          "role": "Viewer"
+        }
+      ]
+    },
+    "appx": {
+      "applicationId": "LosslessCut",
+      "identityName": "57275mifi.no.LosslessCut",
+      "publisher": "CN=2C479316-22A8-4D63-BC38-F0FB9AB0B974",
+      "publisherDisplayName": "mifi.no"
+    },
+    "linux": {
+      "executableName": "losslesscut",
+      "extraResources": [
+        "node_modules/ffmpeg-static/ffmpeg",
+        "node_modules/ffprobe-static/bin/linux/x64/**"
+      ],
+      "icon": "icon-build/app-512.png",
+      "target": [
+        "tar.bz2",
+        "AppImage",
+        "snap"
+      ]
+    }
+  }
+}
