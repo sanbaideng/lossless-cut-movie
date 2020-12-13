@@ -56,6 +56,7 @@ import { createSegment, createInitialCutSegments, createInitialCutSegments1, get
 
 
 import loadingLottie from './7077-magic-flow.json';
+import { useDebugValue } from 'react';
 
 
 // const isDev = window.require('electron-is-dev');
@@ -193,6 +194,7 @@ const App = memo(() => {
   const firstUpdateRef = useRef(true);
 
   function safeSetConfig(key, value) {
+    debugger;
     // Prevent flood-saving all config when mounting
     if (firstUpdateRef.current) return;
 
@@ -292,6 +294,7 @@ const App = memo(() => {
   const isFileOpened1 = !!filePath1;
 
   function setTimelineMode(newMode) {
+    debugger;
     if (newMode === 'waveform') {
       setWaveformEnabled(v => !v);
       setThumbnailsEnabled(false);
@@ -302,6 +305,7 @@ const App = memo(() => {
   }
 
   function setTimelineMode1(newMode) {
+    debugger;
     if (newMode === 'waveform') {
       setWaveformEnabled1(v => !v);
       setThumbnailsEnabled1(false);
@@ -314,6 +318,7 @@ const App = memo(() => {
 
 
   const toggleKeyframesEnabled = useCallback(() => {
+    debugger;
     setKeyframesEnabled((old) => {
       const enabled = !old;
       if (enabled && !calcShouldShowKeyframes(zoomedDuration)) {
@@ -324,6 +329,7 @@ const App = memo(() => {
   }, [zoomedDuration]);
 
   const toggleKeyframesEnabled1 = useCallback(() => {
+    debugger;
     setKeyframesEnabled((old) => {
       const enabled = !old;
       if (enabled && !calcShouldShowKeyframes(zoomedDuration1)) {
@@ -337,6 +343,7 @@ const App = memo(() => {
 
 
   function appendFfmpegCommandLog(command) {
+    debugger;
     setFfmpegCommandLog(old => [...old, { command, time: new Date() }]);
   }
 
@@ -344,19 +351,28 @@ const App = memo(() => {
   const getCurrentTime1 = useCallback(() => currentTimeRef1.current, []);
 
   function setCopyStreamIdsForPath(path, cb) {
+    debugger;
     setCopyStreamIdsByFile((old) => {
       const oldIds = old[path] || {};
       return ({ ...old, [path]: cb(oldIds) });
     });
   }
-
+  function setCopyStreamIdsForPath1(path, cb) {
+    debugger;
+    setCopyStreamIdsByFile1((old) => {
+      const oldIds = old[path] || {};
+      return ({ ...old, [path]: cb(oldIds) });
+    });
+  }
   const toggleSideBar = useCallback(() => setShowSideBar(v => !v), []);
 
   const toggleCopyStreamId = useCallback((path, index) => {
+    debugger;
     setCopyStreamIdsForPath(path, (old) => ({ ...old, [index]: !old[index] }));
   }, []);
 
   function toggleMute() {
+    debugger;
     setMuted((v) => {
       if (!v) toast.fire({ icon: 'info', title: i18n.t('Muted preview (exported file will not be affected)') });
       return !v;
@@ -364,6 +380,7 @@ const App = memo(() => {
   }
 
   const seekAbs = useCallback((val) => {
+    debugger;
     const video = videoRef.current;
     if (val == null || Number.isNaN(val)) return;
     let valRounded = val;
@@ -378,15 +395,18 @@ const App = memo(() => {
   }, [detectedFps]);
 
   const seekRel = useCallback((val) => {
+    debugger;
     seekAbs(videoRef.current.currentTime + val);
   }, [seekAbs]);
 
   const seekRelPercent = useCallback((val) => {
+    debugger;
     if (!isDurationValid(zoomedDuration)) return;
     seekRel(val * zoomedDuration);
   }, [seekRel, zoomedDuration]);
 
   const shortStep = useCallback((dir) => {
+    debugger;
     seekRel((1 / (detectedFps || 60)) * dir);
   }, [seekRel, detectedFps]);
 
@@ -394,6 +414,7 @@ const App = memo(() => {
 
   //seekAbs1
   const seekAbs1 = useCallback((val) => {
+    debugger;
     const video1 = videoRef1.current;
     if (val == null || Number.isNaN(val)) return;
     let valRounded = val;
@@ -408,15 +429,18 @@ const App = memo(() => {
   }, [detectedFps1]);
 
   const seekRel1 = useCallback((val) => {
+    debugger;
     seekAbs1(videoRef1.current.currentTime + val);
   }, [seekAbs1]);
 
   const seekRelPercent1 = useCallback((val) => {
+    debugger;
     if (!isDurationValid(zoomedDuration1)) return;
     seekRel1(val * zoomedDuration1);
   }, [seekRel1, zoomedDuration1]);
 
   const shortStep1 = useCallback((dir) => {
+    debugger;
     seekRel1((1 / (detectedFps1 || 60)) * dir);
   }, [seekRel1, detectedFps1]);
   /* useEffect(() => () => {
@@ -450,6 +474,7 @@ const App = memo(() => {
   }, [comfortZoom]);
 
   const getSegApparentEnd = useCallback((seg) => {
+    debugger;
     const time = seg.end;
     if (time !== undefined) return time;
     if (isDurationValid(duration)) return duration;
@@ -459,6 +484,7 @@ const App = memo(() => {
 
   
   const getSegApparentEnd1 = useCallback((seg) => {
+    debugger;
     const time = seg.end;
     if (time !== undefined) return time;
     if (isDurationValid(duration1)) return duration1;
@@ -508,6 +534,7 @@ const App = memo(() => {
   const sortedCutSegments1 = useMemo(() => sortBy(apparentCutSegments1, 'start'), [apparentCutSegments1]);
 
   const inverseCutSegments = useMemo(() => {
+    debugger;
     if (haveInvalidSegs) return undefined;
     if (sortedCutSegments.length < 1) return undefined;
 
@@ -551,6 +578,7 @@ const App = memo(() => {
 
 
   const inverseCutSegments1 = useMemo(() => {
+    debugger;
     if (haveInvalidSegs1) return undefined;
     if (sortedCutSegments1.length < 1) return undefined;
 
@@ -598,6 +626,7 @@ const App = memo(() => {
 
   
   const setCutTime = useCallback((type, time) => {
+    debugger;
     if (!isDurationValid(duration)) return;
 
     const currentSeg = currentCutSeg;
@@ -618,6 +647,7 @@ const App = memo(() => {
 
 
   const setCutTime1 = useCallback((type, time) => {
+    debugger;
     if (!isDurationValid(duration1)) return;
 
     const currentSeg = currentCutSeg1;
@@ -637,12 +667,14 @@ const App = memo(() => {
 
 
   const setCurrentSegmentName = useCallback((name) => {
+    debugger;
     const cloned = cloneDeep(cutSegments);
     cloned[currentSegIndexSafe].name = name;
     setCutSegments(cloned);
   }, [currentSegIndexSafe, cutSegments, setCutSegments]);
 
   const updateCurrentSegOrder = useCallback((newOrder) => {
+    debugger;
     const segAtNewIndex = cutSegments[newOrder];
     const segAtOldIndex = cutSegments[currentSegIndexSafe];
     const newSegments = [...cutSegments];
@@ -664,6 +696,7 @@ const App = memo(() => {
 
 
   const getFrameCount = useCallback((sec) => {
+    debugger;
     if (detectedFps == null) return undefined;
     return Math.floor(sec * detectedFps);
   }, [detectedFps]);
@@ -672,9 +705,13 @@ const App = memo(() => {
     currentTimeRef.current = playing ? playerTime : commandedTime;
   }, [commandedTime, playerTime, playing]);
 
+  useEffect(() => {
+    currentTimeRef1.current = playing1 ? playerTime1 : commandedTime1;
+  }, [commandedTime1, playerTime1, playing1]);
   // const getSafeCutTime = useCallback((cutTime, next) => ffmpeg.getSafeCutTime(neighbouringFrames, cutTime, next), [neighbouringFrames]);
 
   const addCutSegment = useCallback(() => {
+    debugger;
     try {
       // Cannot add if prev seg is not finished
       if (currentCutSeg.start === undefined && currentCutSeg.end === undefined) return;
@@ -701,6 +738,7 @@ const App = memo(() => {
 
 
   const addCutSegment1 = useCallback(() => {
+    debugger;
     try {
       // Cannot add if prev seg is not finished
       if (currentCutSeg1.start === undefined && currentCutSeg1.end === undefined) return;
@@ -732,6 +770,7 @@ const App = memo(() => {
 
   const setCutStart = useCallback(() => {
     if (!filePath) return;
+    debugger;
 
     // https://github.com/mifi/lossless-cut/issues/168
     // If we are after the end of the last segment in the timeline,
@@ -755,6 +794,7 @@ const App = memo(() => {
 
 
   const setCutStart1 = useCallback(() => {
+    debugger;
     if (!filePath1) return;
 
     // https://github.com/mifi/lossless-cut/issues/168
@@ -779,6 +819,7 @@ const App = memo(() => {
 
 
   const setCutEnd = useCallback(() => {
+    debugger;
     if (!filePath) return;
 
     try {
@@ -796,6 +837,7 @@ const App = memo(() => {
 
 
   const setCutEnd1 = useCallback(() => {
+    debugger;
     if (!filePath1) return;
 
     try {
@@ -863,27 +905,59 @@ const App = memo(() => {
   }, [debouncedCutSegments, edlFilePath, autoSaveProjectFile]);
 
   function onPlayingChange(val) {
+    debugger;
     setPlaying(val);
     if (!val) {
       setCommandedTime(videoRef.current.currentTime);
     }
   }
 
-  const onStopPlaying = useCallback(() => onPlayingChange(false), []);
-  const onSartPlaying = useCallback(() => onPlayingChange(true), []);
+  function onPlayingChange1(val) {
+    debugger;
+    setPlaying(val);
+    if (!val) {
+      setCommandedTime1(videoRef1.current.currentTime);
+    }
+  }
+  const onStopPlaying = useCallback(() => onPlayingChange1(false), []);
+  const onSartPlaying = useCallback(() => onPlayingChange1(true), []);
   const onDurationChange = useCallback((e) => {
+    debugger;
     // Some files report duration infinity first, then proper duration later
     // Sometimes after seeking to end of file, duration might change
     const { duration: durationNew } = e.target;
+    console.log(e.target);
     console.log('onDurationChange', durationNew);
     if (isDurationValid(durationNew)) setDuration(durationNew);
   }, []);
 
   const onTimeUpdate = useCallback((e) => {
+    debugger;
     const { currentTime } = e.target;
     if (playerTime === currentTime) return;
     setPlayerTime(currentTime);
   }, [playerTime]);
+
+
+  const onStopPlaying1 = useCallback(() => onPlayingChange(false), []);
+  const onSartPlaying1 = useCallback(() => onPlayingChange(true), []);
+  const onDurationChange1 = useCallback((e) => {
+    debugger;
+    // Some files report duration infinity first, then proper duration later
+    // Sometimes after seeking to end of file, duration might change
+    console.log(e.target);
+    const { duration: durationNew } = e.target;
+    console.log('onDurationChange1111', durationNew);
+    if (isDurationValid(durationNew)) setDuration1(durationNew);
+  }, []);
+
+  const onTimeUpdate1 = useCallback((e) => {
+    debugger;
+    const { currentTime } = e.target;
+    if (playerTime1 === currentTime) return;
+    setPlayerTime1(currentTime);
+  }, [playerTime1]);
+
 
   const increaseRotation = useCallback(() => {
     setRotation((r) => (r + 90) % 450);
@@ -974,6 +1048,7 @@ const App = memo(() => {
   ].length;
 
   const toggleStripAudio = useCallback(() => {
+    debugger;
     setCopyStreamIdsForPath(filePath, (old) => {
       const newCopyStreamIds = { ...old };
       mainStreams.forEach((stream) => {
@@ -1212,7 +1287,6 @@ const App = memo(() => {
 
 
   const resetState1 = useCallback(() => {
-    alert(11);
     const video1 = videoRef1.current;
     setCommandedTime1(0);
     video1.currentTime = 0;
@@ -1278,6 +1352,7 @@ const App = memo(() => {
   }
 
   const createDummyVideo = useCallback(async (cod, fp) => {
+    debugger;
     const html5ifiedDummyPathDummy = getOutPath(cod, fp, 'html5ified-dummy.mkv');
     try {
       setCutProgress(0);
@@ -1292,6 +1367,7 @@ const App = memo(() => {
 
   
   const createDummyVideo1 = useCallback(async (cod, fp) => {
+    debugger;
     const html5ifiedDummyPathDummy = getOutPath(cod, fp, 'html5ified-dummy.mkv');
     try {
       setCutProgress1(0);
@@ -1451,6 +1527,8 @@ const App = memo(() => {
   }, [openSendReportDialogWithState, detectedFileFormat]);
 
   const cutClick = useCallback(async () => {
+    debugger;
+    console.log("capture");
     if (working) return;
 
     if (haveInvalidSegs) {
@@ -1541,6 +1619,8 @@ const App = memo(() => {
   ]);
 
   const capture = useCallback(async () => {
+    debugger;
+    console.log("capture");
     if (!filePath || !isDurationValid(duration)) return;
 
     try {
@@ -1579,12 +1659,23 @@ const App = memo(() => {
     return getOutPath(cod, fp, `html5ified-${type}.${ext}`);
   }, []);
 
+  const getHtml5ifiedPath1 = useCallback((cod, fp, type) => {
+    const ext = type === 'fastest-audio' ? 'mkv' : 'mp4';
+    return getOutPath(cod, fp, `html5ified-${type}.${ext}`);
+  }, []);
   const firstSegmentAtCursorIndex = useMemo(() => {
     const segmentsAtCursorIndexes = findSegmentsAtCursor(apparentCutSegments, commandedTime);
     return segmentsAtCursorIndexes[0];
   }, [apparentCutSegments, commandedTime]);
 
+  const firstSegmentAtCursorIndex1 = useMemo(() => {
+    const segmentsAtCursorIndexes = findSegmentsAtCursor(apparentCutSegments1, commandedTime1);
+    return segmentsAtCursorIndexes[0];
+  }, [apparentCutSegments1, commandedTime1]);
+
   const segmentAtCursorRef = useRef();
+
+  const segmentAtCursorRef1 = useRef();
 
   const segmentAtCursor = useMemo(() => {
     const segment = cutSegments[firstSegmentAtCursorIndex];
@@ -1592,7 +1683,14 @@ const App = memo(() => {
     return segment;
   }, [cutSegments, firstSegmentAtCursorIndex]);
 
+  const segmentAtCursor1 = useMemo(() => {
+    const segment = cutSegments1[firstSegmentAtCursorIndex1];
+    segmentAtCursorRef1.current = segment;
+    return segment;
+  }, [cutSegments1, firstSegmentAtCursorIndex1]);
+
   const splitCurrentSegment = useCallback(() => {
+    debugger;
     const segmentAtCursor2 = segmentAtCursorRef.current;
     if (!segmentAtCursor2) {
       errorToast(i18n.t('No segment to split. Please move cursor over the segment you want to split'));
@@ -1608,6 +1706,27 @@ const App = memo(() => {
     newSegments.splice(firstSegmentAtCursorIndex, 1, firstPart, secondPart);
     setCutSegments(newSegments);
   }, [cutSegments, firstSegmentAtCursorIndex, setCutSegments]);
+
+
+
+  const splitCurrentSegment1 = useCallback(() => {
+    debugger;
+    const segmentAtCursor2 = segmentAtCursorRef1.current;
+    if (!segmentAtCursor2) {
+      errorToast(i18n.t('No segment to split. Please move cursor over the segment you want to split'));
+      return;
+    }
+
+    const getNewName = (oldName, suffix) => oldName && `${segmentAtCursor2.name} ${suffix}`;
+
+    const firstPart = createSegment({ name: getNewName(segmentAtCursor2.name, '1'), start: segmentAtCursor2.start, end: currentTimeRef.current });
+    const secondPart = createSegment({ name: getNewName(segmentAtCursor2.name, '2'), start: currentTimeRef.current, end: segmentAtCursor2.end });
+
+    const newSegments = [...cutSegments];
+    newSegments.splice(firstSegmentAtCursorIndex, 1, firstPart, secondPart);
+    setCutSegments1(newSegments);
+  }, [cutSegments1, firstSegmentAtCursorIndex, setCutSegments1]);
+
 
   const loadCutSegments = useCallback((edl) => {
     const validEdl = edl.filter((row) => (
@@ -1785,7 +1904,7 @@ const App = memo(() => {
 
     resetState1();
 
-    setWorking(i18n.t('Loading file'));
+    setWorking1(i18n.t('Loading file'));
 
     async function checkAndSetExistingHtml5FriendlyFile(speed) {
       const existing = getHtml5ifiedPath(cod, fp, speed);
@@ -1794,9 +1913,9 @@ const App = memo(() => {
         console.log('Found existing supported file', existing);
         if (speed === 'fastest-audio') {
           setDummyVideoPath1(existing);
-          setHtml5FriendlyPath();
+          setHtml5FriendlyPath1();
         } else {
-          setHtml5FriendlyPath(existing);
+          setHtml5FriendlyPath1(existing);
         }
 
         showUnsupportedFileMessage();
@@ -1833,12 +1952,12 @@ const App = memo(() => {
         return true;
       };
 
-      setMainStreams(streams);
-      setCopyStreamIdsForPath(fp, () => fromPairs(streams.map((stream) => [
+      setMainStreams1(streams);
+      setCopyStreamIdsForPath1(fp, () => fromPairs(streams.map((stream) => [
         stream.index, shouldDefaultCopyStream(stream),
       ])));
 
-      setFileNameTitle(fp);
+      setFileNameTitle1(fp);
       setFilePath1(fp);
       
       setFileFormat1(ff);
@@ -1850,11 +1969,11 @@ const App = memo(() => {
       }
 
       if (html5FriendlyPathRequested) {
-        setHtml5FriendlyPath(html5FriendlyPathRequested);
+        setHtml5FriendlyPath1(html5FriendlyPathRequested);
         showUnsupportedFileMessage();
       } else if (dummyVideoPathRequested) {
         setDummyVideoPath1(dummyVideoPathRequested);
-        setHtml5FriendlyPath();
+        setHtml5FriendlyPath1();
         showUnsupportedFileMessage();
       } else if (
         !(await checkAndSetExistingHtml5FriendlyFile('slowest') || await checkAndSetExistingHtml5FriendlyFile('slow-audio') || await checkAndSetExistingHtml5FriendlyFile('slow') || await checkAndSetExistingHtml5FriendlyFile('fast-audio') || await checkAndSetExistingHtml5FriendlyFile('fast') || await checkAndSetExistingHtml5FriendlyFile('fastest-audio'))
@@ -1871,7 +1990,7 @@ const App = memo(() => {
         const edl = await tryReadChaptersToEdl(fp);
         if (edl.length > 0 && enableAskForImportChapters && (await askForImportChapters())) {
           console.log('Read chapters', edl);
-          loadCutSegments(edl);
+          loadCutSegments1(edl);
         }
       }
 
@@ -1886,7 +2005,7 @@ const App = memo(() => {
     } finally {
       setWorking();
     }
-  }, [resetState1, working1, createDummyVideo1, loadEdlFile1, getEdlFilePath, getHtml5ifiedPath, loadCutSegments, enableAskForImportChapters]);
+  }, [resetState1, working1, createDummyVideo1, loadEdlFile1, getEdlFilePath, getHtml5ifiedPath1, loadCutSegments1, enableAskForImportChapters]);
 
 
 
@@ -1909,7 +2028,7 @@ const App = memo(() => {
 
   
   const seekClosestKeyframe1 = useCallback((direction) => {
-    const time = findNearestKeyFrameTime({ frames: neighbouringFrames1, time: currentTimeRef.current, direction, fps: detectedFps1 });
+    const time = findNearestKeyFrameTime({ frames: neighbouringFrames1, time: currentTimeRef1.current, direction, fps: detectedFps1 });
     if (time == null) return;
     seekAbs1(time);
   }, [neighbouringFrames1, seekAbs1, detectedFps1]);
@@ -2339,12 +2458,14 @@ const App = memo(() => {
     }
 
     async function createNumSegments2() {
+      debugger;
       if (!checkFileOpened() || !isDurationValid(duration)) return;
       const segments = await createNumSegments(duration);
       if (segments) loadCutSegments(segments);
     }
 
     async function createFixedDurationSegments2() {
+      debugger;
       if (!checkFileOpened() || !isDurationValid(duration)) return;
       const segments = await createFixedDurationSegments(duration);
       if (segments) loadCutSegments(segments);
@@ -2779,10 +2900,10 @@ const App = memo(() => {
           ref={videoRef1}
           style={videoStyle}
           src={fileUri1}
-          onPlay={onSartPlaying}
-          onPause={onStopPlaying}
-          onDurationChange={onDurationChange}
-          onTimeUpdate={onTimeUpdate}
+          onPlay={onSartPlaying1}
+          onPause={onStopPlaying1}
+          onDurationChange={onDurationChange1}
+          onTimeUpdate={onTimeUpdate1}
           onError={onVideoError}
         />
         {canvasPlayerEnabled && <Canvas rotate={effectiveRotation} filePath={filePath1} width={mainVideoStream1.width} height={mainVideoStream1.height} streamIndex={mainVideoStream1.index} playerTime={playerTime} commandedTime={commandedTime} playing={playing} />}
@@ -2837,14 +2958,14 @@ const App = memo(() => {
                   outSegments={outSegments}
                   cutSegments={apparentCutSegments}
                   getFrameCount={getFrameCount}
-                  formatTimecode={formatTimecode}
+                  formatTimecode={formatTimecode1}
                   invertCutSegments={invertCutSegments}
                   onSegClick={setCurrentSegIndex}
                   updateCurrentSegOrder={updateCurrentSegOrder}
                   setCurrentSegmentName={setCurrentSegmentName}
-                  currentCutSeg={currentCutSeg}
+                  currentCutSeg={currentCutSeg1}
                   segmentAtCursor={segmentAtCursor}
-                  addCutSegment={addCutSegment}
+                  addCutSegment={addCutSegment1}
                   removeCutSegment={removeCutSegment}
                   toggleSideBar={toggleSideBar}
                   splitCurrentSegment={splitCurrentSegment}

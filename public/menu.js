@@ -41,6 +41,13 @@ module.exports = (app, mainWindow, newVersion) => {
             mainWindow.webContents.send("close-file");
           },
         },
+        {
+          label: "Close1",
+          accelerator: "CmdOrCtrl+W",
+          async click() {
+            mainWindow.webContents.send("close-file1");
+          },
+        },
         { type: "separator" },
         {
           label: "Load project (CSV)",
