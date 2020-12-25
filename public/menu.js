@@ -55,6 +55,14 @@ module.exports = (app, mainWindow, newVersion) => {
             mainWindow.webContents.send("importEdlFile", "csv");
           },
         },
+
+        {
+          label: "Load project (CSV)1",
+          click() {
+            mainWindow.webContents.send("importEdlFile1", "csv");
+          },
+        },
+
         {
           label: "Import project",
           submenu: [

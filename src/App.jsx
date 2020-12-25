@@ -1618,6 +1618,96 @@ const App = memo(() => {
     fileFormatData, mainStreams, ffmpegExperimental,
   ]);
 
+  const cutClick1 = useCallback(async () => {
+    console.log("capture1");
+    if (working) return;
+
+    if (haveInvalidSegs) {
+      errorToast(i18n.t('Start time must be before end time'));
+      return;
+    }
+
+    if (numStreamsToCopy === 0) {
+      errorToast(i18n.t('No tracks selected for export'));
+      return;
+    }
+
+    if (!outSegments || outSegments.length < 1) {
+      errorToast(i18n.t('No segments to export'));
+      return;
+    }
+
+    try {
+      setWorking(i18n.t('Exporting'));
+
+      // throw (() => { const err = new Error('test'); err.code = 'ENOENT'; return err; })();
+      const outFiles = await cutMultiple({
+        customOutDir,
+        filePath1,
+        outFormat: fileFormat,
+        isCustomFormatSelected,
+        videoDuration: duration1,
+        rotation: isRotationSet ? effectiveRotation : undefined,
+        copyFileStreams,
+        keyframeCut,
+        segments: outSegments,
+        onProgress: setCutProgress,
+        appendFfmpegCommandLog,
+        shortestFlag,
+        ffmpegExperimental,
+      });
+
+      if (outFiles.length > 1 && autoMerge) {
+        setCutProgress(0);
+        setWorking(i18n.t('Merging'));
+
+        await autoMergeSegments({
+          customOutDir,
+          sourceFile: filePath,
+          outFormat: fileFormat,
+          isCustomFormatSelected,
+          segmentPaths: outFiles,
+          ffmpegExperimental,
+          onProgress: setCutProgress,
+        });
+      }
+
+      if (exportExtraStreams) {
+        try {
+          await extractStreams({
+            filePath, customOutDir, streams: nonCopiedExtraStreams,
+          });
+        } catch (err) {
+          console.error('Extra stream export failed', err);
+        }
+      }
+
+      // https://github.com/mifi/lossless-cut/issues/329
+      const extraIphoneMsg = isIphoneHevc(fileFormatData, mainStreams) ? ` ${i18n.t('There is a known issue with cutting iPhone HEVC videos. The output file may not work in all players.')}` : '';
+      const extraStreamsMsg = exportExtraStreams ? ` ${i18n.t('Unprocessable streams were exported as separate files.')}` : '';
+
+      openDirToast({ dirPath: outputDir, text: `${i18n.t('Done! Note: cutpoints may be inaccurate. Make sure you test the output files in your desired player/editor before you delete the source. If output does not look right, see the HELP page.')}${extraIphoneMsg}${extraStreamsMsg}`, timer: 15000 });
+    } catch (err) {
+      console.error('stdout:', err.stdout);
+      console.error('stderr:', err.stderr);
+
+      if (err.exitCode === 1 || err.code === 'ENOENT') {
+        handleCutFailed(err);
+        return;
+      }
+
+      showFfmpegFail(err);
+    } finally {
+      setWorking();
+      setCutProgress();
+    }
+  }, [
+    effectiveRotation, outSegments, handleCutFailed, isRotationSet,
+    working, duration, filePath, keyframeCut,
+    autoMerge, customOutDir, fileFormat, haveInvalidSegs, copyFileStreams, numStreamsToCopy,
+    exportExtraStreams, nonCopiedExtraStreams, outputDir, shortestFlag, isCustomFormatSelected,
+    fileFormatData, mainStreams, ffmpegExperimental,
+  ]);
   const capture = useCallback(async () => {
     debugger;
     console.log("capture");
@@ -2216,6 +2306,11 @@ const App = memo(() => {
     return false;
   }, [isFileOpened]);
 
+  const checkFileOpened1 = useCallback(() => {
+    if (isFileOpened1) return true;
+    toast.fire({ icon: 'info', title: i18n.t('You need to open a media file1 first') });
+    return false;
+  }, [isFileOpened1]);
   const onDrop = useCallback(async (ev) => {
     ev.preventDefault();
     const { files } = ev.dataTransfer;
@@ -2326,7 +2421,7 @@ const App = memo(() => {
     function closeFile1() {
       if (!isFileOpened1) return;
       // eslint-disable-next-line no-alert
-      if (askBeforeClose1 && !window.confirm(i18n.t('Are you sure you want to close the current file?'))) return;
+      if (askBeforeClose1 && !window.confirm(i18n.t('Are you sure you want to close the current file1?'))) return;
 
       resetState1();
     }
@@ -2391,6 +2486,24 @@ const App = memo(() => {
       await loadEdlFile(filePaths[0], type);
     }
 
+    async function importEdlFile1(e, type) {
+      if (!checkFileOpened1()) return;
+
+      if (type === 'youtube') {
+        const edl = await askForYouTubeInput();
+        if (edl.length > 0) loadCutSegments1(edl);
+        return;
+      }
+
+      let filters;
+      if (type === 'csv') filters = [{ name: i18n.t('CSV files'), extensions: ['csv'] }];
+      else if (type === 'xmeml') filters = [{ name: i18n.t('XML files'), extensions: ['xml'] }];
+      else if (type === 'cue') filters = [{ name: i18n.t('CUE files'), extensions: ['cue'] }];
+
+      const { canceled, filePaths } = await dialog.showOpenDialog({ properties: ['openFile'], filters });
+      if (canceled || filePaths.length < 1) return;
+      await loadEdlFile1(filePaths[0], type);
+    }
     function openHelp() {
       toggleHelp();
     }
@@ -2496,6 +2609,7 @@ const App = memo(() => {
     electron.ipcRenderer.on('undo', undo);
     electron.ipcRenderer.on('redo', redo);
     electron.ipcRenderer.on('importEdlFile', importEdlFile);
+    electron.ipcRenderer.on('importEdlFile1', importEdlFile1);
     electron.ipcRenderer.on('exportEdlFile', exportEdlFile);
     electron.ipcRenderer.on('openHelp', openHelp);
     electron.ipcRenderer.on('openSettings', openSettings);
@@ -2528,7 +2642,7 @@ const App = memo(() => {
       electron.ipcRenderer.removeListener('fixInvalidDuration', fixInvalidDuration2);
     };
   }, [
-    mergeFiles, outputDir, filePath, isFileOpened, customOutDir, startTimeOffset, html5ifyCurrentFile,
+    mergeFiles, outputDir, filePath, isFileOpened,isFileOpened1, customOutDir, startTimeOffset, html5ifyCurrentFile,
     createDummyVideo, resetState, extractAllStreams, userOpenFiles,  cutSegmentsHistory, openSendReportDialogWithState,
     loadEdlFile, cutSegments, edlFilePath, askBeforeClose, toggleHelp, toggleSettings, assureOutDirAccess, html5ifyAndLoad, html5ifyInternal,
     loadCutSegments, duration, checkFileOpened, load,  fileFormat,
