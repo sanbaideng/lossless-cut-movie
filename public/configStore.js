@@ -17,6 +17,22 @@ const defaults = {
     wheelSensitivity: 0.2,
     language: undefined,
     ffmpegExperimental: false,
+    
+    captureFormat1: 'jpeg',
+    customOutDir1: undefined,
+    keyframeCut1: true,
+    autoMerge1: false,
+    timecodeShowFrames1: false,
+    invertCutSegments1: false,
+    autoExportExtraStreams1: true,
+    askBeforeClose1: false,
+    enableAskForImportChapters1: true,
+    enableAskForFileOpenAction1: true,
+    muted1: false,
+    autoSaveProjectFile1: true,
+    wheelSensitivity1: 0.2,
+    language1: undefined,
+    ffmpegExperimental1: false,
   },
 };
 

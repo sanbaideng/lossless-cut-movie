@@ -210,12 +210,22 @@ const App = memo(() => {
   // Preferences
   const [captureFormat, setCaptureFormat] = useState(configStore.get('captureFormat'));
   useEffect(() => safeSetConfig('captureFormat', captureFormat), [captureFormat]);
+  const [captureFormat1, setCaptureFormat1] = useState(configStore.get('captureFormat1'));
+  useEffect(() => safeSetConfig('captureFormat1', captureFormat1), [captureFormat1]);
   const [customOutDir, setCustomOutDir] = useState(configStore.get('customOutDir'));
   useEffect(() => safeSetConfig('customOutDir', customOutDir), [customOutDir]);
+  const [customOutDir1, setCustomOutDir1] = useState(configStore.get('customOutDir1'));
+  useEffect(() => safeSetConfig('customOutDir1', customOutDir1), [customOutDir1]);
+
   const [keyframeCut, setKeyframeCut] = useState(configStore.get('keyframeCut'));
   useEffect(() => safeSetConfig('keyframeCut', keyframeCut), [keyframeCut]);
   const [autoMerge, setAutoMerge] = useState(configStore.get('autoMerge'));
   useEffect(() => safeSetConfig('autoMerge', autoMerge), [autoMerge]);
+  const [autoMerge1, setAutoMerge1] = useState(configStore.get('autoMerge1'));
+  useEffect(() => safeSetConfig('autoMerge1', autoMerge1), [autoMerge1]);
+
+
+
   const [timecodeShowFrames, setTimecodeShowFrames] = useState(configStore.get('timecodeShowFrames'));
   useEffect(() => safeSetConfig('timecodeShowFrames', timecodeShowFrames), [timecodeShowFrames]);
 
@@ -231,9 +241,11 @@ const App = memo(() => {
 
   const [autoExportExtraStreams, setAutoExportExtraStreams] = useState(configStore.get('autoExportExtraStreams'));
   useEffect(() => safeSetConfig('autoExportExtraStreams', autoExportExtraStreams), [autoExportExtraStreams]);
+  const [autoExportExtraStreams1, setAutoExportExtraStreams1] = useState(configStore.get('autoExportExtraStreams1'));
+  useEffect(() => safeSetConfig('autoExportExtraStreams1', autoExportExtraStreams1), [autoExportExtraStreams1]);
+
   const [askBeforeClose, setAskBeforeClose] = useState(configStore.get('askBeforeClose'));
   useEffect(() => safeSetConfig('askBeforeClose', askBeforeClose), [askBeforeClose]);
-
   const [askBeforeClose1, setAskBeforeClose1] = useState(configStore.get('askBeforeClose1'));
   useEffect(() => safeSetConfig('askBeforeClose1', askBeforeClose1), [askBeforeClose1]);
 
@@ -244,6 +256,9 @@ const App = memo(() => {
   useEffect(() => safeSetConfig('enableAskForFileOpenAction', enableAskForFileOpenAction), [enableAskForFileOpenAction]);
   const [muted, setMuted] = useState(configStore.get('muted'));
   useEffect(() => safeSetConfig('muted', muted), [muted]);
+  const [muted1, setMuted1] = useState(configStore.get('muted1'));
+  useEffect(() => safeSetConfig('muted1', muted1), [muted1]);
+
   const [autoSaveProjectFile, setAutoSaveProjectFile] = useState(configStore.get('autoSaveProjectFile'));
   useEffect(() => safeSetConfig('autoSaveProjectFile', autoSaveProjectFile), [autoSaveProjectFile]);
   const [wheelSensitivity, setWheelSensitivity] = useState(configStore.get('wheelSensitivity'));
@@ -449,6 +464,7 @@ const App = memo(() => {
 
   // 360 means we don't modify rotation
   const isRotationSet = rotation !== 360;
+  const isRotationSet1 = rotation1 !== 360;
   const effectiveRotation = isRotationSet ? rotation : (mainVideoStream && mainVideoStream.tags && mainVideoStream.tags.rotate && parseInt(mainVideoStream.tags.rotate, 10));
 
   const zoomRel = useCallback((rel) => setZoom(z => Math.min(Math.max(z + rel, 1), zoomMax)), []);
@@ -523,6 +539,9 @@ const App = memo(() => {
     || isCuttingStart(currentApparentCutSeg.start)
     || isCuttingEnd(currentApparentCutSeg.end, duration);
 
+  const areWeCutting1 = apparentCutSegments1.length > 1
+    || isCuttingStart(currentApparentCutSeg1.start)
+    || isCuttingEnd(currentApparentCutSeg1.end, duration1);
   const jumpCutStart = useCallback(() => seekAbs(currentApparentCutSeg.start), [currentApparentCutSeg.start, seekAbs]);
   const jumpCutEnd = useCallback(() => seekAbs(currentApparentCutSeg.end), [currentApparentCutSeg.end, seekAbs]);
 
@@ -914,13 +933,13 @@ const App = memo(() => {
 
   function onPlayingChange1(val) {
     debugger;
-    setPlaying(val);
+    setPlaying1(val);
     if (!val) {
       setCommandedTime1(videoRef1.current.currentTime);
     }
   }
-  const onStopPlaying = useCallback(() => onPlayingChange1(false), []);
-  const onSartPlaying = useCallback(() => onPlayingChange1(true), []);
+  const onStopPlaying = useCallback(() => onPlayingChange(false), []);
+  const onSartPlaying = useCallback(() => onPlayingChange(true), []);
   const onDurationChange = useCallback((e) => {
     debugger;
     // Some files report duration infinity first, then proper duration later
@@ -932,15 +951,15 @@ const App = memo(() => {
   }, []);
 
   const onTimeUpdate = useCallback((e) => {
-    debugger;
+    //debugger;
     const { currentTime } = e.target;
     if (playerTime === currentTime) return;
     setPlayerTime(currentTime);
   }, [playerTime]);
 
 
-  const onStopPlaying1 = useCallback(() => onPlayingChange(false), []);
-  const onSartPlaying1 = useCallback(() => onPlayingChange(true), []);
+  const onStopPlaying1 = useCallback(() => onPlayingChange1(false), []);
+  const onSartPlaying1 = useCallback(() => onPlayingChange1(true), []);
   const onDurationChange1 = useCallback((e) => {
     debugger;
     // Some files report duration infinity first, then proper duration later
@@ -952,7 +971,7 @@ const App = memo(() => {
   }, []);
 
   const onTimeUpdate1 = useCallback((e) => {
-    debugger;
+    //debugger;
     const { currentTime } = e.target;
     if (playerTime1 === currentTime) return;
     setPlayerTime1(currentTime);
@@ -962,6 +981,10 @@ const App = memo(() => {
   const increaseRotation = useCallback(() => {
     setRotation((r) => (r + 90) % 450);
     setHideCanvasPreview(false);
+  }, []);
+  const increaseRotation1 = useCallback(() => {
+    setRotation((r) => (r + 90) % 450);
+    setHideCanvasPreview1(false);
   }, []);
 
   const assureOutDirAccess = useCallback(async (outFilePath) => {
@@ -1010,6 +1033,7 @@ const App = memo(() => {
   }, [assureOutDirAccess, outputDir, ffmpegExperimental]);
 
   const toggleCaptureFormat = useCallback(() => setCaptureFormat(f => (f === 'png' ? 'jpeg' : 'png')), []);
+  const toggleCaptureFormat1 = useCallback(() => setCaptureFormat1(f => (f === 'png' ? 'jpeg' : 'png')), []);
   const toggleKeyframeCut = useCallback(() => setKeyframeCut((val) => {
     const newVal = !val;
     if (newVal) toast.fire({ title: i18n.t('Keyframe cut enabled'), text: i18n.t('Will now cut at the nearest keyframe before the desired start cutpoint. This is recommended for most files.') });
@@ -1483,8 +1507,59 @@ const App = memo(() => {
     }
   }, [filePath, html5FriendlyPath, resetState, working, dummyVideoPath]);
 
+  const deleteSource1 = useCallback(async () => {
+    if (!filePath1 || working1) return;
+
+    const { value: trashConfirmed1 } = await Swal.fire({
+      icon: 'warning',
+      text: i18n.t('Are you sure you want to move the source file to trash1?'),
+      confirmButtonText: i18n.t('Trash it1'),
+      showCancelButton: true,
+    });
+    if (!trashConfirmed1) return;
+
+    // We can use variables like filePath and html5FriendlyPath, even after they are reset because react setState is async
+    resetState1();
+
+    try {
+      setWorking1(i18n.t('Deleting source1'));
+
+      if (html5FriendlyPath1) await trash(html5FriendlyPath1).catch(console.error);
+      if (dummyVideoPath1) await trash(dummyVideoPath1).catch(console.error);
+
+      // throw new Error('test');
+      await trash(filePath1);
+      toast.fire({ icon: 'info', title: i18n.t('File has been moved to trash1') });
+    } catch (err) {
+      try {
+        console.warn('Failed to trash1', err);
+
+        const { value } = await Swal.fire({
+          icon: 'warning',
+          text: i18n.t('Unable to move source file to trash. Do you want to permanently delete it1?'),
+          confirmButtonText: i18n.t('Permanently delete1'),
+          showCancelButton: true,
+        });
+
+        if (value) {
+          if (html5FriendlyPath1) await unlink(html5FriendlyPath1).catch(console.error);
+          if (dummyVideoPath1) await unlink(dummyVideoPath1).catch(console.error);
+          await unlink(filePath1);
+          toast.fire({ icon: 'info', title: i18n.t('File has been permanently deleted1') });
+        }
+      } catch (err2) {
+        errorToast(`Unable to delete file1: ${err2.message}`);
+        console.error(err2);
+      }
+    } finally {
+      setWorking1();
+    }
+  }, [filePath1, html5FriendlyPath1, resetState1, working1, dummyVideoPath1]);
+
   const outSegments = useMemo(() => (invertCutSegments ? inverseCutSegments : apparentCutSegments),
     [invertCutSegments, inverseCutSegments, apparentCutSegments]);
+  const outSegments1 = useMemo(() => (invertCutSegments1 ? inverseCutSegments1 : apparentCutSegments1),
+    [invertCutSegments1, inverseCutSegments1, apparentCutSegments1]);
 
   const openSendReportDialogWithState = useCallback(async (err) => {
     const state = {
@@ -1722,6 +1797,26 @@ const App = memo(() => {
         : await captureFrameFromTag({ customOutDir, filePath, currentTime, captureFormat, duration, video });
 
       openDirToast({ dirPath: outputDir, text: `${i18n.t('Screenshot captured to:')} ${outPath}` });
+    } catch (err) {
+      console.error(err);
+      errorToast(i18n.t('Failed to capture frame'));
+    }
+  }, [filePath, captureFormat, customOutDir, html5FriendlyPath, dummyVideoPath, outputDir, duration]);
+
+  const capture1 = useCallback(async () => {
+    debugger;
+    console.log("capture1");
+    if (!filePath1 || !isDurationValid(duration1)) return;
+
+    try {
+      const mustCaptureFfmpeg1 = html5FriendlyPath1 || dummyVideoPath1;
+      const currentTime1 = currentTimeRef1.current;
+      const video1 = videoRef1.current;
+      const outPath1 = mustCaptureFfmpeg1
+        ? await captureFrameFfmpeg({ customOutDir1, filePath1, currentTime1, captureFormat1, duration1 })
+        : await captureFrameFromTag({ customOutDir1, filePath1, currentTime1, captureFormat1, duration1, video1 });
+
+      openDirToast({ dirPath: outputDir, text: `${i18n.t('Screenshot captured to:')} ${outPath1}` });
     } catch (err) {
       console.error(err);
       errorToast(i18n.t('Failed to capture frame'));
@@ -2701,6 +2796,16 @@ const App = memo(() => {
       {captureFormat}
     </Button>
   ), [captureFormat, toggleCaptureFormat]);
+  const renderCaptureFormatButton1 = useCallback((props) => (
+    <Button
+      title={i18n.t('Capture frame format1')}
+      onClick={withBlur(toggleCaptureFormat1)}
+      // eslint-disable-next-line react/jsx-props-no-spreading
+      {...props}
+    >
+      {captureFormat1}
+    </Button>
+  ), [captureFormat1, toggleCaptureFormat1]);
 
   const AutoExportToggler = useCallback(() => (
     <SegmentedControl
@@ -3164,17 +3269,17 @@ const App = memo(() => {
           />
 
           <RightMenu
-            hasVideo={hasVideo}
-            isRotationSet={isRotationSet}
-            rotation={rotation}
-            areWeCutting={areWeCutting}
-            autoMerge={autoMerge}
-            increaseRotation={increaseRotation}
-            deleteSource={deleteSource}
-            renderCaptureFormatButton={renderCaptureFormatButton}
+            hasVideo={hasVideo1}
+            isRotationSet={isRotationSet1}
+            rotation={rotation1}
+            areWeCutting={areWeCutting1}
+            autoMerge={autoMerge1}
+            increaseRotation={increaseRotation1}
+            deleteSource={deleteSource1}
+            renderCaptureFormatButton={renderCaptureFormatButton1}
             capture={capture}
-            cutClick={cutClick}
-            outSegments={outSegments}
+            cutClick={cutClick1}
+            outSegments={outSegments1}
           />
         </div>
       </motion.div>
